@@ -6,12 +6,18 @@ def main():
     st.title('24 Game Solver')
     solver = CardGameSolver()
 
-    # Collapsible configuration section
+    # Initialize or update session state for target if necessary
+    if 'target' not in st.session_state:
+        st.session_state['target'] = solver.target  # initial setup with default target from solver
+
+    # Collapsible configuration section for setting target
     with st.expander("Configuration", expanded=False):
-        new_target = st.number_input('Set a new target value (default is 24):', value=solver.target, min_value=1, step=1)
-        if new_target != solver.target:
-            solver.change_target(new_target)
-            st.experimental_rerun()
+        new_target = st.number_input('Set a new target value:', value=st.session_state['target'], min_value=1, step=1)
+        if new_target != st.session_state['target']:
+            st.session_state['target'] = new_target  # update session state with new target
+
+    # Update the solver's target value from session state on each run
+    solver.change_target(st.session_state['target'])
 
     st.header("Input your hand")
     col1, col2, col3, col4 = st.columns(4)
